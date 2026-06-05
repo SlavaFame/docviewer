@@ -1,2 +1,2 @@
 # docviewer
-No dowload, only view
+No download, only view
