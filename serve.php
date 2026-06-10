@@ -110,5 +110,4 @@ class ServeController
     }
 }
 
-// ─── Bootstrap ────────────────────────────────────────────────────────────────
 (new ServeController())->run();

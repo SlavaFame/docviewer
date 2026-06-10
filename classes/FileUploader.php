@@ -25,8 +25,6 @@ class FileUploader
     public function getErrors(): array  { return $this->errors; }
     public function getFileInfo(): ?array { return $this->fileInfo; }
 
-    // ─── Валидация ───────────────────────────────────────────────────────────
-
     private function validateUploadError(int $error): bool
     {
         if ($error === UPLOAD_ERR_OK) return true;
@@ -137,8 +135,6 @@ class FileUploader
 
         return true;
     }
-
-    // ─── Сохранение ──────────────────────────────────────────────────────────
 
     private function store(string $tmpPath, string $originalName, string $ext, int $size): bool
     {

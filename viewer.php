@@ -38,8 +38,6 @@ class ViewerController
         ?>
 
 <div class="page-content">
-
-    <!-- Header -->
     <div class="page-title-box">
         <div class="d-flex align-items-center gap-3 flex-wrap">
             <div class="doc-icon <?= $doc->extension ?>" style="width:46px;height:46px;font-size:1.35rem">
@@ -66,12 +64,9 @@ class ViewerController
         </div>
     </div>
 
-    <!-- Viewer card -->
     <div class="card">
-        <!-- Toolbar -->
         <div class="card-header viewer-toolbar">
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                <!-- PDF controls -->
                 <div class="toolbar-group" id="pdf-controls" style="display:none">
                     <button class="toolbar-btn" id="prev-page"><i class="uil-angle-left"></i></button>
                     <span id="page-info" class="page-info">Стр. 1 / ?</span>
@@ -81,17 +76,13 @@ class ViewerController
                     <span id="zoom-info" class="zoom-info">100%</span>
                     <button class="toolbar-btn" id="zoom-in"><i class="uil-plus-circle"></i></button>
                 </div>
-                <!-- Sheet tabs -->
                 <div id="sheet-tabs" class="d-flex gap-1 flex-wrap"></div>
-                <!-- Loading -->
                 <div id="loading-indicator" class="d-flex align-items-center gap-2 small text-muted">
                     <span class="spinner-border spinner-border-sm text-primary"></span>
                     Загрузка документа...
                 </div>
             </div>
         </div>
-
-        <!-- Body -->
         <div class="viewer-body">
             <div class="viewer-watermark">ТОЛЬКО ДЛЯ ПРОСМОТРА</div>
             <div id="pdf-container"  class="viewer-pdf-container"  style="display:none"></div>
@@ -103,7 +94,6 @@ class ViewerController
             </div>
         </div>
     </div>
-
 </div>
 
 <div id="vd"
@@ -203,7 +193,6 @@ body{font-family:var(--font);background:var(--body-bg);color:#6c757d;font-size:.
     font-weight:700;transition:all .15s}
 .sheet-tab.active,.sheet-tab:hover{background:var(--primary);color:#fff}
 
-/* viewer-body — серый фон на заднем плане, контейнеры тянутся на всю высоту */
 .viewer-body{
     position:relative;
     min-height:600px;
@@ -220,7 +209,6 @@ body{font-family:var(--font);background:var(--body-bg);color:#6c757d;font-size:.
     user-select:none;letter-spacing:4px;
 }
 
-/* PDF — страницы плавают на сером фоне (intentional) */
 .viewer-pdf-container{
     overflow-y:auto;max-height:820px;padding:24px;
     display:flex;flex-direction:column;align-items:center;gap:16px;
@@ -230,7 +218,6 @@ body{font-family:var(--font);background:var(--body-bg);color:#6c757d;font-size:.
     display:block;max-width:100%;
 }
 
-/* DOCX/XLSX — белый фон заполняет всю высоту, серый только за краями */
 .viewer-docx-container{
     flex:1;
     min-height:600px;
@@ -265,8 +252,6 @@ body{font-family:var(--font);background:var(--body-bg);color:#6c757d;font-size:.
 </html>
     <?php }
 
-    // ─── Скрипт просмотра ────────────────────────────────────────────────────
-
     private function viewerScript(): string { return <<<'JS'
 <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.js"></script>
 <script type="module">
@@ -275,7 +260,6 @@ const TOKEN = D.dataset.token;
 const TYPE  = D.dataset.type;
 const URL   = `serve.php?token=${TOKEN}`;
 
-// ── Security ──────────────────────────────────────────────────────────────────
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('dragstart',   e => e.preventDefault());
 document.addEventListener('keydown', e => {
@@ -288,7 +272,6 @@ const ps = document.createElement('style');
 ps.textContent = '@media print{body{display:none!important}}';
 document.head.appendChild(ps);
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 
 function hideLoading() {
@@ -320,7 +303,6 @@ async function loadBuffer() {
     return r.arrayBuffer();
 }
 
-// ── PDF ───────────────────────────────────────────────────────────────────────
 async function initPdf() {
     const { getDocument, GlobalWorkerOptions } = await import(
         'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.mjs'
@@ -376,8 +358,6 @@ async function initPdf() {
     await renderAll();
 }
 
-// ── DOCX ─────────────────────────────────────────────────────────────────────
-// mammoth загружается как UMD-скрипт (<script> выше), доступен как window.mammoth
 async function initDocx() {
     const mammoth = window.mammoth;
     if (!mammoth) throw new Error('Библиотека mammoth не загружена.');
@@ -393,7 +373,6 @@ async function initDocx() {
     hideLoading();
 }
 
-// ── XLSX ──────────────────────────────────────────────────────────────────────
 async function initXlsx() {
     const XLSX = await import('https://cdn.jsdelivr.net/npm/xlsx@0.18.5/xlsx.mjs');
     const buf  = await loadBuffer();
@@ -445,7 +424,6 @@ function showSheet(wb, XLSX, name) {
     c.appendChild(t);
 }
 
-// ── Bootstrap ─────────────────────────────────────────────────────────────────
 try {
     if      (TYPE === 'pdf')  await initPdf();
     else if (TYPE === 'docx') await initDocx();
@@ -456,7 +434,6 @@ try {
 } catch(e) {
     showError('Ошибка загрузки: ' + e.message);
 } finally {
-    // Гарантированно скрываем спиннер в любом случае
     hideLoading();
 }
 </script>
